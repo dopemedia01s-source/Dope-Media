@@ -35,11 +35,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Ensure Vite site configuration exists
+        run: |
+          if [ ! -f .figma/make/site.json ]; then
+            mkdir -p .figma/make
+            printf '{}\n' > .figma/make/site.json
+          fi
+
       - name: Build website
         run: pnpm build
         env:
-          # Vite uses this value as the base path for GitHub Pages project sites.
           # For a repository named USERNAME.github.io, deploy at the domain root.
+          # For other repositories, use /REPOSITORY_NAME as the GitHub Pages base path.
           FIGMA_PUBLIC_URL: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '' || format('/{0}', github.event.repository.name) }}
 
       - name: Configure GitHub Pages
