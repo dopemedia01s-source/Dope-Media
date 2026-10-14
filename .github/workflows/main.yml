@@ -42,12 +42,11 @@ jobs:
             printf '{}\n' > .figma/make/site.json
           fi
 
-      - name: Build website
+      - name: Build website for custom domain root
         run: pnpm build
         env:
-          # For a repository named USERNAME.github.io, deploy at the domain root.
-          # For other repositories, use /REPOSITORY_NAME as the GitHub Pages base path.
-          FIGMA_PUBLIC_URL: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '' || format('/{0}', github.event.repository.name) }}
+          # Empty means vite.config.ts falls back to base "/".
+          FIGMA_PUBLIC_URL: ""
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
